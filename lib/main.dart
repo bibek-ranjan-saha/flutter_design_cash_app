@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'src/design/cards/cards.dart';
+import 'src/design/cards/cards_view.dart';
 
 void main() {
   runApp(const MyApp());

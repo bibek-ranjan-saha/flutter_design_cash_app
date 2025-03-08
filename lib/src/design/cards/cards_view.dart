@@ -2,7 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
-import '../../../gen/assets.gen.dart';
+import 'cards_data.dart';
 
 class Cards extends StatefulWidget {
   const Cards({super.key});
@@ -12,7 +12,6 @@ class Cards extends StatefulWidget {
 }
 
 class _CardsState extends State<Cards> {
-  late final int itemCount;
   late final PageController _controller;
 
   late int _currentPage;
@@ -20,8 +19,6 @@ class _CardsState extends State<Cards> {
   @override
   void initState() {
     super.initState();
-
-    itemCount = 9;
 
     const initialPage = 0;
     _controller = PageController(
@@ -48,7 +45,7 @@ class _CardsState extends State<Cards> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: PageView.builder(
-        itemCount: itemCount,
+        itemCount: cards.length,
         controller: _controller,
         scrollDirection: Axis.vertical,
         itemBuilder: (context, index) {
@@ -91,9 +88,12 @@ class _CardsState extends State<Cards> {
                   ? 1 + (maxScale - 1) * progress //
                   : 1;
 
+          final backImage = cards[index].back;
+
           return Center(
             child: Transform(
               alignment: Alignment.center,
+              origin: const Offset(0.5, 0),
               transform: Matrix4.identity()
                 //* https://stackoverflow.com/questions/73671310/flutter-design-how-to-create-very-complex-only-one-conner-rodent
                 ..setEntry(3, 2, .001)
@@ -106,7 +106,7 @@ class _CardsState extends State<Cards> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(16),
                   image: DecorationImage(
-                    image: Assets.medias.cards.blackMetal.back.provider(),
+                    image: backImage.provider(),
                     fit: BoxFit.cover,
                   ),
                 ),
