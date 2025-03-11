@@ -17,7 +17,7 @@ class Cards extends StatefulWidget {
 class _CardsState extends State<Cards> {
   late final PageController _controller;
 
-  late int _currentPage;
+  late double _currentPage;
 
   @override
   void initState() {
@@ -28,16 +28,11 @@ class _CardsState extends State<Cards> {
       viewportFraction: 0.26,
       initialPage: initialPage,
     );
-    _currentPage = initialPage;
+    _currentPage = initialPage.toDouble();
     _controller.addListener(() {
-      final currentPage = _controller.page?.floor();
       setState(() {
-        _currentPage = currentPage!;
+        _currentPage = _controller.page ?? 0.0;
       });
-    });
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      setState(() {});
     });
   }
 
@@ -55,12 +50,14 @@ class _CardsState extends State<Cards> {
         controller: _controller,
         scrollDirection: Axis.vertical,
         itemBuilder: (context, index) {
-          final isCurrentPageAnimating = _currentPage == index;
-          final isNextPageAnimating = _currentPage + 1 == index;
+          final progress = _currentPage % 1;
 
-          final progress = _controller.page! - _currentPage;
+          final currentPageInt = _currentPage.toInt();
 
-          final indexSmallerThanCurrentPage = _currentPage >= index;
+          final isCurrentPageAnimating = currentPageInt == index;
+          final isNextPageAnimating = currentPageInt + 1 == index;
+
+          final indexSmallerThanCurrentPage = currentPageInt >= index;
 
           // ?Rotation
           // e.g., ..., -187, -110, 0, 110, 187, ...
@@ -75,7 +72,7 @@ class _CardsState extends State<Cards> {
           //   1. 144
           //   2. -72
           final rotateXStartIndex = math.min(
-            (_currentPage - index).abs(),
+            (currentPageInt - index).abs(),
             lastRotationsAngleIndex, // limit till the last index
           );
 
@@ -124,7 +121,7 @@ class _CardsState extends State<Cards> {
               child: _Card(
                 card: cards[index],
                 showFront: showFront,
-                isFocused: isCurrentPageAnimating,
+                isFocused: isCurrentPageAnimating || isNextPageAnimating,
               ),
             ),
           );
