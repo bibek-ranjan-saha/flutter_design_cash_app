@@ -63,20 +63,37 @@ class _CardsState extends State<Cards> {
           final indexSmallerThanCurrentPage = _currentPage >= index;
 
           // ?Rotation
-          const maxRotations = 5;
-          const oneRotationValue = (360 / maxRotations);
-          // Determines the current rotation number (e.g. 1, 2 till [maxRotations])
-          final rotationNumber = switch (indexSmallerThanCurrentPage) {
-            true => _currentPage - index + 1,
-            false => maxRotations - (index - _currentPage - 1),
-          };
-          // Rotate from 144 to 216
-          // Rotation Ending Angle (e.g. 216)
-          final rotateXEnd = oneRotationValue * rotationNumber;
-          // Rotation Starting Angle (e.g. 144)
-          final rotateXStart = rotateXEnd - oneRotationValue;
+          // e.g., ..., -187, -110, 0, 110, 187, ...
+          const rotationsAngle = [0, 110, 187, 280, 360];
+          final maxRotations = rotationsAngle.length;
+          final lastRotationsAngleIndex = maxRotations - 1;
+          // Rotate from:
+          //   1. 144 to 216
+          //   2. -72 to 0
 
-          final rotateXAngle = rotateXStart + (oneRotationValue * progress);
+          // Rotation Starting Angle:
+          //   1. 144
+          //   2. -72
+          final rotateXStartIndex = math.min(
+            (_currentPage - index).abs(),
+            lastRotationsAngleIndex, // limit till the last index
+          );
+
+          // Rotation Ending Angle:
+          //   1. 216
+          //   2. 0
+          final rotateXEndIndex = switch (indexSmallerThanCurrentPage) {
+            true => math.min(rotateXStartIndex + 1, lastRotationsAngleIndex),
+            false => math.min(rotateXStartIndex - 1, lastRotationsAngleIndex),
+          };
+
+          final rotateXStartAngle = rotationsAngle[rotateXStartIndex];
+          final rotateXEndAngle = rotationsAngle[rotateXEndIndex];
+
+          final rotateXAngle = switch (indexSmallerThanCurrentPage) {
+            true => -(rotateXStartAngle + ((rotateXEndAngle - rotateXStartAngle) * progress)),
+            false => (rotateXStartAngle + ((rotateXEndAngle - rotateXStartAngle) * progress)),
+          };
 
           const maxRotateZAngle = -7.5;
           final rotateZAngle = isCurrentPageAnimating
@@ -86,14 +103,14 @@ class _CardsState extends State<Cards> {
                   : 0;
 
           // ?Scaling
-          const maxScale = 1.1;
+          const maxScale = 1.15;
           final double scaleValue = isCurrentPageAnimating
               ? 1 + (maxScale - 1) * (1 - progress) //
               : isNextPageAnimating
                   ? 1 + (maxScale - 1) * progress //
                   : 1;
 
-          bool showFront = rotateXAngle < 90 || rotateXAngle > 270;
+          bool showFront = rotateXAngle > -90 && rotateXAngle < 90;
 
           return Center(
             child: Transform(
@@ -102,7 +119,7 @@ class _CardsState extends State<Cards> {
                 //* https://stackoverflow.com/questions/73671310/flutter-design-how-to-create-very-complex-only-one-conner-rodent
                 ..setEntry(3, 2, .001)
                 ..rotateZ(rotateZAngle * math.pi / 180) // Convert degrees to radians
-                ..rotateX(-rotateXAngle * math.pi / 180) // Convert degrees to radians
+                ..rotateX(rotateXAngle * math.pi / 180) // Convert degrees to radians
                 ..scale(scaleValue, scaleValue),
               child: _Card(
                 card: cards[index],
@@ -198,7 +215,10 @@ class _CardState extends State<_Card> {
             ? frontVideo != null && _controller != null
                 ? VideoPlayer(_controller)
                 : Image.asset(frontImage!.path, fit: BoxFit.cover)
-            : Image.asset(backImage.path, fit: BoxFit.cover),
+            : Transform.flip(
+                flipY: true,
+                child: Image.asset(backImage.path, fit: BoxFit.cover),
+              ),
       ),
     );
   }
