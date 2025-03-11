@@ -1,16 +1,9 @@
-# flutter_design_cash_app
+# Flutter Design Cash App
 
-A new Flutter project.
+<h3>Cards</h3>
+<a href="https://github.com/Alvish0407/flutter_design_cash_app/blob/main/lib/src/design/cards">View Code</a>
+&nbsp
+<a href="https://design.cash.app/cards">Inspiration</a> 
+<br/><br/>
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+![Cards ListView](preview.gif)
