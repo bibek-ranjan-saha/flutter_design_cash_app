@@ -25,7 +25,7 @@ class _CardsState extends State<Cards> {
 
     const initialPage = 2;
     _controller = PageController(
-      viewportFraction: 0.26,
+      viewportFraction: 0.24,
       initialPage: initialPage,
     );
     _currentPage = initialPage.toDouble();
@@ -204,7 +204,7 @@ class _CardState extends State<_Card> {
     }
 
     return Container(
-      width: 350,
+      width: 300,
       margin: const EdgeInsets.only(bottom: 16),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16),
