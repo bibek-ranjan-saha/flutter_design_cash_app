@@ -49,6 +49,9 @@ flutter:
   # the material Icons class.
   uses-material-design: true
 
+  shaders:
+    - shaders/complex_gradient.frag
+
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/medias/cards/Black_Metal/
